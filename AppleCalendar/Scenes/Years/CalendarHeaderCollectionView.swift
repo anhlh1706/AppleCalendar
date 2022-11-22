@@ -13,7 +13,7 @@ final class YearHeaderCollectionView: UICollectionReusableView {
     private(set) var label: UILabel!
     private var bottomSeparator: UIView!
     
-    var title: String = "" {
+    var title: String? {
         didSet {
             label.text = title
         }

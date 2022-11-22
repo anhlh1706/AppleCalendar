@@ -37,6 +37,7 @@ struct MonthSection: Hashable {
     let id = UUID()
     var month: Int
     var days: [String] // includes blank day (the day before 1st)
+    let monthText: String
     
     init(month: Int, year: Int) {
         self.month = month
@@ -51,7 +52,10 @@ struct MonthSection: Hashable {
         let dayCount = date.endOfMonth().day
         
         // Sunday has index 0 but it's placed in the last column so turn it to 7
-        let blankDays = [String](repeating: "", count: startWeekdayIndex == 0 ? 7 : startWeekdayIndex)
+        let blankDays = [String](repeating: "", count: startWeekdayIndex)
         days = blankDays + (0...dayCount).map { String($0) }
+        
+        formatter.dateFormat = "MMM"
+        monthText = formatter.string(from: date)
     }
 }
