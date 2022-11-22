@@ -1,5 +1,5 @@
 //
-//  CalendarViewController.swift
+//  YearsViewController.swift
 //  AppleCalendar
 //
 //  Created by Lê Hoàng Anh on 21/11/2022.
@@ -8,34 +8,10 @@
 import UIKit
 import Anchorage
 
-struct YearSection: Hashable {
-    var year: Int
-    var months: [MonthSection]
-}
-
-struct MonthSection: Hashable {
-    let id = UUID()
-    var dayCount: Int
-    var startWeekday: Int
-    
-    init(month: Int, year: Int) {
-        dayCount = 30
-        startWeekday = 1
-    }
-}
-
 fileprivate typealias CalendarDataSource = UICollectionViewDiffableDataSource<YearSection, MonthSection>
 fileprivate typealias CalendarSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
 
-final class CalendarViewController: UIViewController {
-    
-    private let startTime = Date(timeIntervalSince1970: 0)
-    
-    private var endTime: Date = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
-        return formatter.date(from: "31/12/2050")!
-    }()
+final class YearsViewController: UIViewController {
     
     var collectionView: UICollectionView!
     
@@ -54,7 +30,7 @@ final class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .systemBackground
         setupCollectionView()
         createDataSource()
         updateContent()
@@ -64,19 +40,20 @@ final class CalendarViewController: UIViewController {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         view.addSubview(collectionView)
         collectionView.edgeAnchors == view.safeAreaLayoutGuide.edgeAnchors
+        
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         
         collectionView.register(LabelCollectionCell.self, forCellWithReuseIdentifier: "LabelCollectionCell")
-        collectionView.register(CalendarHeaderCollectionView.self,
+        collectionView.register(YearHeaderCollectionView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: "CalendarHeaderCollectionView")
+                                withReuseIdentifier: "YearHeaderCollectionView")
     }
     
     func createDataSource() {
         dataSource = CalendarDataSource(collectionView: collectionView) { collectionView, indexPath, item in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCollectionCell", for: indexPath) as! LabelCollectionCell
-            cell.titleLabel.text = String(item.dayCount)
+            cell.titleLabel.text = String(item.days[indexPath.row])
             return cell
         }
         
@@ -84,7 +61,7 @@ final class CalendarViewController: UIViewController {
             let firstItem = self?.dataSource?.itemIdentifier(for: indexPath)!
             let category = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstItem!)!
             
-            let categoryHeader = (collectionView ).dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CalendarHeaderCollectionView", for: indexPath) as! CalendarHeaderCollectionView
+            let categoryHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "YearHeaderCollectionView", for: indexPath) as! YearHeaderCollectionView
             
             categoryHeader.title = String(category?.year ?? 0)
             return categoryHeader
@@ -145,8 +122,8 @@ final class CalendarViewController: UIViewController {
     }
 }
 
-extension CalendarViewController: UICollectionViewDelegate {
+extension YearsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        navigationController?.pushViewController(MonthsViewController(), animated: true)
     }
 }
