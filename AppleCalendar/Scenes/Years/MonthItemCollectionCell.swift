@@ -57,7 +57,7 @@ final class MonthItemCollectionCell: UICollectionViewCell {
             let day = (Int(item.day) ?? 0) == 0 ? "" : item.day
             cell.titleLabel.text = day
             cell.showTopSeparator = false
-            cell.titleLabel.font = .systemFont(ofSize: 8, weight: .semibold)
+            cell.titleLabel.font = .systemFont(ofSize: 9, weight: .semibold)
             return cell
         }
         
@@ -68,7 +68,7 @@ final class MonthItemCollectionCell: UICollectionViewCell {
             let categoryHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "YearHeaderCollectionView", for: indexPath) as! YearHeaderCollectionView
             categoryHeader.showBottomSeparator = false
             categoryHeader.title = category?.monthText
-            categoryHeader.label.font = .systemFont(ofSize: 16, weight: .semibold)
+            categoryHeader.label.font = .systemFont(ofSize: 20, weight: .semibold)
             return categoryHeader
         }
     }
@@ -99,14 +99,14 @@ final class MonthItemCollectionCell: UICollectionViewCell {
     
     /// Configure section header layout.
     func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
+        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(30))
         let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         return layoutSectionHeader
     }
     
     /// Configure section layout
     func createSection(using item: MonthSection) -> NSCollectionLayoutSection {
-        let itemHeight: CGFloat = 14
+        let itemHeight: CGFloat = 16
         let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * itemHeight
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
@@ -115,7 +115,8 @@ final class MonthItemCollectionCell: UICollectionViewCell {
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
-        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 18, trailing: 5)
+        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
+
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         
         let layoutSectionHeader = createSectionHeader()

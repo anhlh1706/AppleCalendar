@@ -43,7 +43,7 @@ final class YearsViewController: UIViewController {
         
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
-        
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(MonthItemCollectionCell.self, forCellWithReuseIdentifier: "MonthItemCollectionCell")
         collectionView.register(YearHeaderCollectionView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -96,24 +96,23 @@ final class YearsViewController: UIViewController {
     
     /// Configure section header layout.
     func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
+        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .estimated(80))
         let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         return layoutSectionHeader
     }
     
     /// Configure section layout
     func createSection(using item: YearSection) -> NSCollectionLayoutSection {
-        let itemHeight: CGFloat = 130
+        let itemHeight: CGFloat = 145
         let sectionHeight = (CGFloat(item.months.count) / itemsPerLine).rounded(.up) * itemHeight
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(sectionHeight))
 
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0)
 
         let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
-        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 18)
+        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
 
         let layoutSectionHeader = createSectionHeader()

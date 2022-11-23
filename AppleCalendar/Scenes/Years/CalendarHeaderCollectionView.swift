@@ -36,7 +36,7 @@ final class YearHeaderCollectionView: UICollectionReusableView {
         bottomSeparator.horizontalAnchors == horizontalAnchors + 5
         bottomSeparator.heightAnchor == 0.5
         
-        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.font = .systemFont(ofSize: 36, weight: .bold)
         bottomSeparator.backgroundColor = .separator
     }
     

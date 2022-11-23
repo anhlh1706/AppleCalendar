@@ -52,7 +52,7 @@ extension MonthsViewController {
         collectionView.edgeAnchors == view.safeAreaLayoutGuide.edgeAnchors
         
         collectionView.delegate = self
-        
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(LabelCollectionCell.self, forCellWithReuseIdentifier: "LabelCollectionCell")
         collectionView.register(YearHeaderCollectionView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
