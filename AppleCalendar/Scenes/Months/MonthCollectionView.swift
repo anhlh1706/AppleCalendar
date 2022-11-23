@@ -63,7 +63,7 @@ final class MonthsCollectionView: UICollectionView {
             
             let categoryHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "YearHeaderCollectionView", for: indexPath) as! YearHeaderCollectionView
             
-            categoryHeader.title = String(category?.month ?? 0)
+            categoryHeader.title = category?.monthText
             categoryHeader.showBottomSeparator = false
             return categoryHeader
         }
@@ -106,7 +106,6 @@ final class MonthsCollectionView: UICollectionView {
     func createSection(using item: MonthSection) -> NSCollectionLayoutSection {
         let itemHeight: CGFloat = 60
         let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * itemHeight
-        print(1 / itemsPerLine)
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(sectionHeight))
 

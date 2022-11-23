@@ -126,5 +126,6 @@ final class YearsViewController: UIViewController {
 extension YearsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         navigationController?.pushViewController(MonthsViewController(), animated: true)
+        title = String(sections[indexPath.section].year)
     }
 }

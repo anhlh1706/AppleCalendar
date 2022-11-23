@@ -13,6 +13,7 @@
 		E685B2AA292CC09E006BC5BD /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2A9292CC09E006BC5BD /* DateExtension.swift */; };
 		E685B2AD292CC470006BC5BD /* Sections.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2AC292CC470006BC5BD /* Sections.swift */; };
 		E685B2AF292CD398006BC5BD /* MonthItemCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2AE292CD398006BC5BD /* MonthItemCollectionCell.swift */; };
+		E685B2B1292DE60A006BC5BD /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2B0292DE60A006BC5BD /* ColorExtension.swift */; };
 		E6CB61B2292B82020097D928 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB61B1292B82020097D928 /* AppDelegate.swift */; };
 		E6CB61B4292B82020097D928 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB61B3292B82020097D928 /* SceneDelegate.swift */; };
 		E6CB61B6292B82020097D928 /* YearsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB61B5292B82020097D928 /* YearsViewController.swift */; };
@@ -31,6 +32,7 @@
 		E685B2A9292CC09E006BC5BD /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		E685B2AC292CC470006BC5BD /* Sections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sections.swift; sourceTree = "<group>"; };
 		E685B2AE292CD398006BC5BD /* MonthItemCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthItemCollectionCell.swift; sourceTree = "<group>"; };
+		E685B2B0292DE60A006BC5BD /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		E6CB61AE292B82020097D928 /* AppleCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppleCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6CB61B1292B82020097D928 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E6CB61B3292B82020097D928 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				E685B2A9292CC09E006BC5BD /* DateExtension.swift */,
+				E685B2B0292DE60A006BC5BD /* ColorExtension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				E685B2AF292CD398006BC5BD /* MonthItemCollectionCell.swift in Sources */,
 				E6CB61B4292B82020097D928 /* SceneDelegate.swift in Sources */,
 				E685B2A7292CA442006BC5BD /* MonthsViewController.swift in Sources */,
+				E685B2B1292DE60A006BC5BD /* ColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
