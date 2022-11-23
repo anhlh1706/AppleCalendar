@@ -65,13 +65,30 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             guard let selectingIndexPath = fromViewController.collectionView.indexPathsForSelectedItems?.first else { return }
             guard let selectingCell = fromViewController.collectionView.cellForItem(at: selectingIndexPath) else { return }
             
-            let fullScreenWidth = fromViewController.view.bounds.width
-            let currentWidth = selectingCell.bounds.width
-            let scaleFactor = fullScreenWidth / currentWidth
+            let scaleFactor = {
+                let fullScreenWidth = fromViewController.view.bounds.width
+                let currentWidth = selectingCell.bounds.width
+                return fullScreenWidth / currentWidth
+            }()
+            
+            let translationXFactor = {
+                let x = selectingCell.frame.minX
+                let translationAfterScaled = (selectingCell.bounds.width / 2) * (scaleFactor - 1)
+                let xAfterScaled = x - translationAfterScaled
+                return xAfterScaled
+            }()
+            
+            let translationYFactor = {
+                let y = selectingCell.frame.minY
+                let translationAfterScaled = (selectingCell.bounds.height / 2) * (scaleFactor - 1)
+                let yAfterScaled = y - translationAfterScaled - fromViewController.collectionView.contentOffset.y
+                return yAfterScaled
+            }()
             
             UIView.animate(withDuration: transactionDuration) {
-                selectingCell.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-                fromViewController.collectionView.alpha = 0
+                selectingCell.transform = CGAffineTransform(translationX: -translationXFactor, y: -translationYFactor).scaledBy(x: scaleFactor, y: scaleFactor)
+                fromViewController.collectionView.alpha = 0.3
+                
             }
             
         }
