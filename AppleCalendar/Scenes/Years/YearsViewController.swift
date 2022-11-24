@@ -17,6 +17,8 @@ final class YearsViewController: UIViewController {
     
     private var dataSource: CalendarDataSource!
     
+    let monthsViewController = MonthsViewController()
+    
     private let itemsPerLine: CGFloat = 3
     
     override func viewDidLoad() {
@@ -25,6 +27,11 @@ final class YearsViewController: UIViewController {
         setupCollectionView()
         createDataSource()
         updateContent()
+        preloadMonths()
+    }
+    
+    func preloadMonths() {
+        monthsViewController.view.layoutIfNeeded()
     }
     
     func setupCollectionView() {
@@ -115,7 +122,7 @@ final class YearsViewController: UIViewController {
 
 extension YearsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(MonthsViewController(), animated: true)
+        navigationController?.pushViewController(monthsViewController, animated: true)
         title = String(DataSource.shared.yearSections[indexPath.section].year)
     }
 }

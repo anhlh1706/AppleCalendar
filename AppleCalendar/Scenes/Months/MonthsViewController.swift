@@ -7,17 +7,20 @@
 
 import UIKit
 import Anchorage
+import Combine
 
 fileprivate typealias MonthsDataSource = UITableViewDiffableDataSource<YearSection, MonthSection>
 fileprivate typealias MonthsSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
 
 final class MonthsViewController: UIViewController {
     
+    private var cancellables = [AnyCancellable]()
+    
     private(set) var tableView: UITableView!
     
     private var ds: MonthsDataSource!
     
-    private let itemsPerLine: CGFloat = 7
+    private var observation: NSKeyValueObservation!
     
     var currentYear: Int = 1970 {
         didSet {
@@ -28,8 +31,7 @@ final class MonthsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
-        setupCollectionView()
+        setupTableView()
         createDataSource()
         updateContent()
     }
@@ -37,7 +39,7 @@ final class MonthsViewController: UIViewController {
 
 extension MonthsViewController {
     
-    func setupCollectionView() {
+    func setupTableView() {
         tableView = UITableView()
         view.addSubview(tableView)
         tableView.edgeAnchors == view.safeAreaLayoutGuide.edgeAnchors
@@ -46,6 +48,11 @@ extension MonthsViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.register(MonthTableViewCell.self, forCellReuseIdentifier: "MonthTableViewCell")
         tableView.register(LabelTableHeaderView.self, forHeaderFooterViewReuseIdentifier: "LabelTableHeaderView")
+        
+//        tableView.publisher(for: \.contentSize).throttle(for: .seconds(0.1), scheduler: RunLoop.main, latest: false).sink { [weak tableView] _ in
+//            tableView?.layoutIfNeeded()
+//        }.store(in: &cancellables)
+        
     }
     
     func createDataSource() {
@@ -54,7 +61,6 @@ extension MonthsViewController {
             cell.month = item
             return cell
         }
-        
     }
     
     func updateContent() {
@@ -71,42 +77,6 @@ extension MonthsViewController {
         }
     }
     
-    /// Configure flow layout
-    func createCompositionalLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return self.createSection(using: DataSource.shared.monthItems[sectionIndex])
-        }
-
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        layout.configuration = config
-        return layout
-    }
-    
-    /// Configure section header layout.
-    func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
-        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-        return layoutSectionHeader
-    }
-    
-    /// Configure section layout
-    func createSection(using item: MonthSection) -> NSCollectionLayoutSection {
-        let itemHeight: CGFloat = 200
-        let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * itemHeight
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(sectionHeight))
-
-        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-
-        let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
-        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 18)
-        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-
-        let layoutSectionHeader = createSectionHeader()
-        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
-        
-        return layoutSection
-    }
 }
 
 extension MonthsViewController: UITableViewDelegate {

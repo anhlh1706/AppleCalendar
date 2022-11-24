@@ -28,7 +28,6 @@ final class MonthTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCollectionView()
         createDataSource()
-        updateContent()
     }
     
     required init?(coder: NSCoder) {
@@ -73,12 +72,11 @@ final class MonthTableViewCell: UITableViewCell {
     }
     
     func updateContent() {
+        guard let month = month else { return }
         var snapshot = MonthsSnapshot()
         
-        if let month = month {
-            snapshot.appendSections([month])
-            snapshot.appendItems(month.days.map({ Day(day: $0) }), toSection: month)
-        }
+        snapshot.appendSections([month])
+        snapshot.appendItems(month.days.map({ Day(day: $0) }), toSection: month)
         
         if !snapshot.itemIdentifiers.isEmpty {
             ds?.apply(snapshot)
