@@ -100,17 +100,14 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
                 fromViewController.view.alpha = 0
             }
             
-            // Set collectionView offset in selected month
-            if let attributes = toViewController.collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: selectingIndexPath.section * 12 + selectingIndexPath.item)) {
-                let offsetY = attributes.frame.origin.y - toViewController.collectionView.contentInset.top
-                toViewController.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
-            }
+            // Set tableView offset in selected month
+            toViewController.tableView.scrollToRow(at: IndexPath(row: selectingIndexPath.section * 12 + selectingIndexPath.item, section: 0), at: .top, animated: false)
             
             // ToMonth fade big in
-            let scaleInFactor = 1 / scaleOutFactor
-            toViewController.collectionView.subviews.forEach {
-                $0.transform = CGAffineTransform(scaleX: scaleInFactor, y: scaleInFactor)
-            }
+//            let scaleInFactor = 1 / scaleOutFactor
+//            toViewController.collectionView.subviews.forEach {
+//                $0.transform = CGAffineTransform(scaleX: scaleInFactor, y: scaleInFactor)
+//            }
             
 //            let indexPath = IndexPath(item: 0, section: selectingIndexPath.section * 12 + selectingIndexPath.item)
 //            DispatchQueue.main.async {

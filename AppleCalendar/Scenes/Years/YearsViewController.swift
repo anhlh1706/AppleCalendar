@@ -19,15 +19,6 @@ final class YearsViewController: UIViewController {
     
     private let itemsPerLine: CGFloat = 3
     
-    private lazy var sections: [YearSection] = {
-        let startYear = Calendar.current.component(.year, from: startTime)
-        let endYear = Calendar.current.component(.year, from: endTime)
-        
-        return Array(startYear...endYear).map({ year in
-            YearSection(year: year, months: Array(1...12).map({ MonthSection(month: $0, year: year) }))
-        })
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -71,7 +62,7 @@ final class YearsViewController: UIViewController {
     func updateContent() {
         var snapshot = CalendarSnapshot()
         
-        for section in sections where !section.months.isEmpty {
+        for section in DataSource.shared.yearSections where !section.months.isEmpty {
             snapshot.appendSections([section])
             snapshot.appendItems(section.months.map { $0 }, toSection: section)
         }
@@ -86,7 +77,7 @@ final class YearsViewController: UIViewController {
     /// Configure flow layout
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return self.createSection(using: self.sections[sectionIndex])
+            return self.createSection(using: DataSource.shared.yearSections[sectionIndex])
         }
 
         let config = UICollectionViewCompositionalLayoutConfiguration()
@@ -125,6 +116,6 @@ final class YearsViewController: UIViewController {
 extension YearsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         navigationController?.pushViewController(MonthsViewController(), animated: true)
-        title = String(sections[indexPath.section].year)
+        title = String(DataSource.shared.yearSections[indexPath.section].year)
     }
 }

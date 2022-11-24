@@ -1,33 +1,31 @@
 //
-//  MonthCollectionView.swift
+//  MonthTableViewCell.swift
 //  AppleCalendar
 //
-//  Created by Lê Hoàng Anh on 22/11/2022.
+//  Created by Lê Hoàng Anh on 24/11/2022.
 //
 
 import UIKit
+import Anchorage
 
 fileprivate typealias MonthsDataSource = UICollectionViewDiffableDataSource<MonthSection, Day>
 fileprivate typealias MonthsSnapshot = NSDiffableDataSourceSnapshot<MonthSection, Day>
 
-private let monthSections: [MonthSection] = {
-    let startYear = Calendar.current.component(.year, from: startTime)
-    let endYear = Calendar.current.component(.year, from: endTime)
+final class MonthTableViewCell: UITableViewCell {
     
-    return Array(startYear...endYear).flatMap({ year in
-        Array(1...12).map({ MonthSection(month: $0, year: year) })
-    })
-}()
-
-final class MonthsCollectionView: UICollectionView {
+    private(set) var collectionView: SizingCollectionView!
     
+    var month: MonthSection! {
+        didSet {
+            updateContent()
+        }
+    }
     private var ds: MonthsDataSource!
     
     private let itemsPerLine: CGFloat = 7
     
-    init() {
-        super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionViewLayout = createCompositionalLayout()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCollectionView()
         createDataSource()
         updateContent()
@@ -38,17 +36,22 @@ final class MonthsCollectionView: UICollectionView {
     }
     
     func setupCollectionView() {
-        backgroundColor = .clear
-        delegate = self
-        contentInset = .zero
-        register(LabelCollectionCell.self, forCellWithReuseIdentifier: "LabelCollectionCell")
-        register(YearHeaderCollectionView.self,
+        collectionView = SizingCollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
+        contentView.addSubview(collectionView)
+        collectionView.edgeAnchors == contentView.edgeAnchors
+        collectionView.backgroundColor = .clear
+        collectionView.contentInset = .zero
+        
+        collectionView.collectionViewLayout = createCompositionalLayout()
+        
+        collectionView.register(LabelCollectionCell.self, forCellWithReuseIdentifier: "LabelCollectionCell")
+        collectionView.register(YearHeaderCollectionView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: "YearHeaderCollectionView")
     }
     
     func createDataSource() {
-        ds = MonthsDataSource(collectionView: self) { collectionView, indexPath, item in
+        ds = MonthsDataSource(collectionView: collectionView) { collectionView, indexPath, item in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCollectionCell", for: indexPath) as! LabelCollectionCell
             
             let day = (Int(item.day) ?? 0) == 0 ? "" : item.day
@@ -72,9 +75,9 @@ final class MonthsCollectionView: UICollectionView {
     func updateContent() {
         var snapshot = MonthsSnapshot()
         
-        for section in monthSections where !section.days.isEmpty {
-            snapshot.appendSections([section])
-            snapshot.appendItems(section.days.map { Day(day: $0) }, toSection: section)
+        if let month = month {
+            snapshot.appendSections([month])
+            snapshot.appendItems(month.days.map({ Day(day: $0) }), toSection: month)
         }
         
         if !snapshot.itemIdentifiers.isEmpty {
@@ -87,7 +90,7 @@ final class MonthsCollectionView: UICollectionView {
     /// Configure flow layout
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return self.createSection(using: monthSections[sectionIndex])
+            return self.createSection(using: DataSource.shared.monthItems[sectionIndex])
         }
 
         let config = UICollectionViewCompositionalLayoutConfiguration()
@@ -119,11 +122,5 @@ final class MonthsCollectionView: UICollectionView {
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
         
         return layoutSection
-    }
-}
-
-extension MonthsCollectionView: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
     }
 }

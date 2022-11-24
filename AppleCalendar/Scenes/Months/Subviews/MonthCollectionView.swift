@@ -1,68 +1,72 @@
 //
-//  MonthViewController.swift
+//  MonthCollectionView.swift
 //  AppleCalendar
 //
 //  Created by Lê Hoàng Anh on 22/11/2022.
 //
 
 import UIKit
-import Anchorage
 
-fileprivate typealias MonthsDataSource = UITableViewDiffableDataSource<YearSection, MonthSection>
-fileprivate typealias MonthsSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
+fileprivate typealias MonthsDataSource = UICollectionViewDiffableDataSource<MonthSection, Day>
+fileprivate typealias MonthsSnapshot = NSDiffableDataSourceSnapshot<MonthSection, Day>
 
-final class MonthsViewController: UIViewController {
-    
-    private(set) var tableView: UITableView!
+final class MonthsCollectionView: UICollectionView {
     
     private var ds: MonthsDataSource!
     
     private let itemsPerLine: CGFloat = 7
     
-    var currentYear: Int = 1970 {
-        didSet {
-            navigationController?.viewControllers.first?.title = String(currentYear)
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
+    init() {
+        super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionViewLayout = createCompositionalLayout()
         setupCollectionView()
         createDataSource()
         updateContent()
     }
-}
-
-extension MonthsViewController {
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     func setupCollectionView() {
-        tableView = UITableView()
-        view.addSubview(tableView)
-        tableView.edgeAnchors == view.safeAreaLayoutGuide.edgeAnchors
-        
-        tableView.delegate = self
-        tableView.showsVerticalScrollIndicator = false
-        tableView.register(MonthTableViewCell.self, forCellReuseIdentifier: "MonthTableViewCell")
-        tableView.register(LabelTableHeaderView.self, forHeaderFooterViewReuseIdentifier: "LabelTableHeaderView")
+        backgroundColor = .clear
+        delegate = self
+        contentInset = .zero
+        register(LabelCollectionCell.self, forCellWithReuseIdentifier: "LabelCollectionCell")
+        register(YearHeaderCollectionView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: "YearHeaderCollectionView")
     }
     
     func createDataSource() {
-        ds = MonthsDataSource(tableView: tableView) { tableView, indexPath, item in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MonthTableViewCell", for: indexPath) as! MonthTableViewCell
-            cell.month = item
+        ds = MonthsDataSource(collectionView: self) { collectionView, indexPath, item in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCollectionCell", for: indexPath) as! LabelCollectionCell
+            
+            let day = (Int(item.day) ?? 0) == 0 ? "" : item.day
+            cell.titleLabel.text = day
+            cell.showTopSeparator = !day.isEmpty
             return cell
         }
         
+        ds?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            let firstItem = self?.ds?.itemIdentifier(for: indexPath)!
+            let category = self?.ds?.snapshot().sectionIdentifier(containingItem: firstItem!)!
+            
+            let categoryHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "YearHeaderCollectionView", for: indexPath) as! YearHeaderCollectionView
+            
+            categoryHeader.title = category?.monthText
+            categoryHeader.showBottomSeparator = false
+            return categoryHeader
+        }
     }
     
     func updateContent() {
         var snapshot = MonthsSnapshot()
         
-        let section = YearSection(year: 0, months: DataSource.shared.monthItems)
-        snapshot.appendSections([section])
-        snapshot.appendItems(section.months, toSection: section)
+        for section in DataSource.shared.monthItems where !section.days.isEmpty {
+            snapshot.appendSections([section])
+            snapshot.appendItems(section.days.map { Day(day: $0) }, toSection: section)
+        }
         
         if !snapshot.itemIdentifiers.isEmpty {
             ds?.apply(snapshot)
@@ -91,7 +95,7 @@ extension MonthsViewController {
     
     /// Configure section layout
     func createSection(using item: MonthSection) -> NSCollectionLayoutSection {
-        let itemHeight: CGFloat = 200
+        let itemHeight: CGFloat = 60
         let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * itemHeight
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(sectionHeight))
@@ -109,13 +113,8 @@ extension MonthsViewController {
     }
 }
 
-extension MonthsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let startYear = Calendar.current.component(.year, from: DataSource.startTime)
+extension MonthsCollectionView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let displayingYear = startYear + (indexPath.row / 12)
-        if displayingYear != currentYear {
-            currentYear = displayingYear
-        }
     }
 }
