@@ -17,12 +17,20 @@ struct DataSource {
     
     static let shared = DataSource()
     
-    static let startTime = Date(timeIntervalSince1970: 0)
+//    static let startTime = Date(timeIntervalSince1970: 0)
+    
+    static let bigSectionHeaderHeight: CGFloat = 53
+    
+    static let startTime: Date = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        return formatter.date(from: "31/12/2020")!
+    }()
     
     static let endTime: Date = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
-        return formatter.date(from: "31/12/2050")!
+        return formatter.date(from: "31/12/2030")!
     }()
     
     let yearSections: [YearSection] = {
@@ -52,7 +60,7 @@ struct YearSection: Hashable {
 struct MonthSection: Hashable {
     let id = UUID()
     var month: Int
-    var days: [String] // includes blank days (the days before 1st)
+    var days: [String] // includes blank days (the days before 1st in section)
     let monthText: String
     
     init(month: Int, year: Int) {
@@ -63,13 +71,13 @@ struct MonthSection: Hashable {
         
         let date = formatter.date(from: "\(month)/\(year)")!
         
-        /// Weekday start from 1
+        /// Weekdays count from 1
         /// minus 1 to count from zero
-        /// Sunday is the first day in Weekday, but in our calendar, it placed in the last column
+        /// Sunday is the first day in Weekday (index = 0), but in our calendar, it placed in the last column
         /// so minus 1 one more time to set the first index = 0 to monday
         /// and set sunday to index of 6 to turn it last
         var startWeekdayIndex = Calendar.current.component(.weekday, from: date.startOfMonth()) - 2
-        if startWeekdayIndex == -1 {
+        if startWeekdayIndex == -1 { /// sunday
             startWeekdayIndex = 6
         }
         

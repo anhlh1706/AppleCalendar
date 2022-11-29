@@ -20,12 +20,14 @@ final class MonthTableViewCell: UITableViewCell {
             updateContent()
         }
     }
+    
     private var ds: MonthsDataSource!
     
     private let itemsPerLine: CGFloat = 7
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
         setupCollectionView()
         createDataSource()
     }
@@ -98,8 +100,12 @@ final class MonthTableViewCell: UITableViewCell {
     
     /// Configure section header layout.
     func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
-        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93),
+                                                             heightDimension: .estimated(DataSource.bigSectionHeaderHeight))
+        
+        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize,
+                                                                              elementKind: UICollectionView.elementKindSectionHeader,
+                                                                              alignment: .top)
         return layoutSectionHeader
     }
     

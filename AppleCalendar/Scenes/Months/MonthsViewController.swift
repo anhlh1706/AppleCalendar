@@ -49,9 +49,11 @@ extension MonthsViewController {
         tableView.register(MonthTableViewCell.self, forCellReuseIdentifier: "MonthTableViewCell")
         tableView.register(LabelTableHeaderView.self, forHeaderFooterViewReuseIdentifier: "LabelTableHeaderView")
         
-//        tableView.publisher(for: \.contentSize).throttle(for: .seconds(0.1), scheduler: RunLoop.main, latest: false).sink { [weak tableView] _ in
-//            tableView?.layoutIfNeeded()
-//        }.store(in: &cancellables)
+//        tableView.publisher(for: \.contentSize)
+//            .throttle(for: .seconds(0.1), scheduler: RunLoop.main, latest: false)
+//            .map({ _ in () })
+//            .sink(receiveValue: tableView.layoutIfNeeded)
+//            .store(in: &cancellables)
         
     }
     
