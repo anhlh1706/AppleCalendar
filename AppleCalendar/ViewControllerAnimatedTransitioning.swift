@@ -12,7 +12,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
     
     var isPush: Bool
     
-    let translationDuration: CGFloat = 0.5
+    let translationDuration: CGFloat = 0.4
     
     init(isPush: Bool) {
         self.isPush = isPush
@@ -62,10 +62,11 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             let translationYFactor = {
                 let y = selectingCell.frame.minY
                 let translationAfterScaled = (selectingCell.bounds.height / 2) * (scaleOutFactor - 1)
-                let yAfterScaled = y - translationAfterScaled - fromViewController.collectionView.contentOffset.y
+                let yAfterScaled = y - translationAfterScaled - fromViewController.collectionView.contentOffset.y + DataSource.bigSectionHeaderHeight
                 return yAfterScaled
             }()
             
+            /// fade out all cells
             UIView.animate(withDuration: translationDuration, animations: {
                 for cell in fromViewController.collectionView.subviews.filter({ $0 !== selectingCell }) {
                     let xDistance = cell.frame.minX - selectingCell.frame.minX
@@ -96,7 +97,12 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             /// Dummy
             let scaleInFactor = 1 / scaleOutFactor
             
-            let dummyView = MonthItemDummyView(month: DataSource.shared.monthItems[indexPathToAnimateIn.row])
+            var months = [DataSource.shared.monthItems[indexPathToAnimateIn.row]]
+                          
+            if DataSource.shared.monthItems.count > (indexPathToAnimateIn.row + 1) {
+                months.append(DataSource.shared.monthItems[indexPathToAnimateIn.row + 1])
+            }
+            let dummyView = MonthItemDummyView(months: months)
             fromViewController.view.addSubview(dummyView)
             dummyView.edgeAnchors == fromViewController.view.safeAreaLayoutGuide.edgeAnchors
             

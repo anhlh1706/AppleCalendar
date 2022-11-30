@@ -111,10 +111,11 @@ final class MonthTableViewCell: UITableViewCell {
     
     /// Configure section layout
     func createSection(using item: MonthSection) -> NSCollectionLayoutSection {
-        let itemHeight: CGFloat = 60
-        let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * itemHeight
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine), heightDimension: .absolute(itemHeight))
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(sectionHeight))
+        let sectionHeight = (CGFloat(item.days.count) / itemsPerLine).rounded(.up) * DataSource.dayItemHeight
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1 / itemsPerLine),
+                                              heightDimension: .absolute(DataSource.dayItemHeight))
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                     heightDimension: .estimated(sectionHeight))
 
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
 

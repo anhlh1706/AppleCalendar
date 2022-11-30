@@ -13,7 +13,7 @@ final class NavigationController: UINavigationController {
         super.viewDidLoad()
         delegate = self
         navigationItem.largeTitleDisplayMode = .never
-        navigationBar.topItem?.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchAction)), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchAction)), animated: false)
     }
     
     @objc

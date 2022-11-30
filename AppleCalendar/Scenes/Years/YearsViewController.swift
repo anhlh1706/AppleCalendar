@@ -42,6 +42,7 @@ final class YearsViewController: UIViewController {
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(MonthItemCollectionCell.self, forCellWithReuseIdentifier: "MonthItemCollectionCell")
         collectionView.register(YearHeaderCollectionView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,

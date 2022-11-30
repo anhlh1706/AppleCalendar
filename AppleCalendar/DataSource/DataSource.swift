@@ -20,6 +20,7 @@ struct DataSource {
 //    static let startTime = Date(timeIntervalSince1970: 0)
     
     static let bigSectionHeaderHeight: CGFloat = 53
+    static let dayItemHeight: CGFloat = 60
     
     static let startTime: Date = {
         let formatter = DateFormatter()

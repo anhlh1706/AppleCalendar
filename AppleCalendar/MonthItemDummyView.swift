@@ -12,17 +12,17 @@ fileprivate typealias MonthsDataSource = UITableViewDiffableDataSource<YearSecti
 fileprivate typealias MonthsSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
 
 /// Dummy view to show scale in animation after selecting a month from year
-/// Showing a month with exactly same position with month screen after scaled 
+/// Showing a month with exactly same position with month screen after scaled
 final class MonthItemDummyView: UIView, UITableViewDelegate {
     
     private(set) var tableView: UITableView!
     
-    let month: MonthSection
+    let months: [MonthSection]
     
     private var ds: MonthsDataSource!
     
-    init(month: MonthSection) {
-        self.month = month
+    init(months: [MonthSection]) {
+        self.months = months
         super.init(frame: .zero)
         backgroundColor = .clear
         setupTableView()
@@ -57,7 +57,7 @@ final class MonthItemDummyView: UIView, UITableViewDelegate {
     func updateContent() {
         var snapshot = MonthsSnapshot()
         
-        let section = YearSection(year: 0, months: [month])
+        let section = YearSection(year: 0, months: months)
         snapshot.appendSections([section])
         snapshot.appendItems(section.months, toSection: section)
         
@@ -69,6 +69,22 @@ final class MonthItemDummyView: UIView, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        bounds.height
+        var numberOfLines = months[indexPath.row].days.count / 7
+        if months[indexPath.row].days.count % 7 != 0 {
+            numberOfLines += 1
+        }
+        return DataSource.bigSectionHeaderHeight + CGFloat(numberOfLines) * DataSource.dayItemHeight
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard indexPath.row != 0 else { return }
+        DispatchQueue.main.async {
+            let scaleFactor = 0.8
+            cell.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            UIView.animate(withDuration: 0.2, delay: 0.1) {
+                cell.transform = .identity
+                cell.layoutIfNeeded()
+            }
+        }
     }
 }
