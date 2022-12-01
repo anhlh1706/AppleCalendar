@@ -12,7 +12,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
     
     var isPush: Bool
     
-    let translationDuration: CGFloat = 2//0.4
+    let translationDuration: CGFloat = 0.4
     
     init(isPush: Bool) {
         self.isPush = isPush
@@ -111,7 +111,6 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             
             /// Month to show fade big in
             /// Dummy
-            
             var months = [DataSource.shared.monthItems[indexPathToAnimateIn.row]]
                           
             if DataSource.shared.monthItems.count > (indexPathToAnimateIn.row + 1) {
