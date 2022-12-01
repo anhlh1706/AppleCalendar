@@ -15,8 +15,6 @@ enum Screen {
 
 struct DataSource {
     
-    static let shared = DataSource()
-    
 //    static let startTime = Date(timeIntervalSince1970: 0)
     
     static let bigSectionHeaderHeight: CGFloat = 53
@@ -35,7 +33,7 @@ struct DataSource {
         return formatter.date(from: "31/12/2030")!
     }()
     
-    let yearSections: [YearSection] = {
+    static let yearSections: [YearSection] = {
         let startYear = Calendar.current.component(.year, from: startTime)
         let endYear = Calendar.current.component(.year, from: endTime)
         
@@ -44,7 +42,7 @@ struct DataSource {
         })
     }()
     
-    let monthItems: [MonthSection] = {
+    static let monthItems: [MonthSection] = {
         let startYear = Calendar.current.component(.year, from: startTime)
         let endYear = Calendar.current.component(.year, from: endTime)
         

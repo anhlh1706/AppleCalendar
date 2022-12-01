@@ -12,6 +12,7 @@
 		E6565EFB292F27E900BD555D /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6565EFA292F27E900BD555D /* LabelTableViewCell.swift */; };
 		E6565EFE292F284400BD555D /* LabelTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6565EFD292F284400BD555D /* LabelTableHeaderView.swift */; };
 		E6565F00292F2F2E00BD555D /* SizingCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6565EFF292F2F2E00BD555D /* SizingCollectionView.swift */; };
+		E65D7C012938899E00D56E4D /* YearItemDummyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65D7C002938899E00D56E4D /* YearItemDummyView.swift */; };
 		E685B2A2292C951B006BC5BD /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2A1292C951B006BC5BD /* NavigationController.swift */; };
 		E685B2A4292C966E006BC5BD /* MonthCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2A3292C966E006BC5BD /* MonthCollectionView.swift */; };
 		E685B2A7292CA442006BC5BD /* MonthsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E685B2A6292CA442006BC5BD /* MonthsViewController.swift */; };
@@ -36,6 +37,7 @@
 		E6565EFA292F27E900BD555D /* LabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell.swift; sourceTree = "<group>"; };
 		E6565EFD292F284400BD555D /* LabelTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableHeaderView.swift; sourceTree = "<group>"; };
 		E6565EFF292F2F2E00BD555D /* SizingCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizingCollectionView.swift; sourceTree = "<group>"; };
+		E65D7C002938899E00D56E4D /* YearItemDummyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearItemDummyView.swift; sourceTree = "<group>"; };
 		E685B2A1292C951B006BC5BD /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		E685B2A3292C966E006BC5BD /* MonthCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCollectionView.swift; sourceTree = "<group>"; };
 		E685B2A6292CA442006BC5BD /* MonthsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthsViewController.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				E685B2A1292C951B006BC5BD /* NavigationController.swift */,
 				E6E28221293055B300217535 /* ViewControllerAnimatedTransitioning.swift */,
 				E63C09E129311A1C008CEEC7 /* MonthItemDummyView.swift */,
+				E65D7C002938899E00D56E4D /* YearItemDummyView.swift */,
 				E6CB61BA292B82030097D928 /* Assets.xcassets */,
 				E6CB61BC292B82030097D928 /* LaunchScreen.storyboard */,
 				E6CB61BF292B82030097D928 /* Info.plist */,
@@ -251,6 +254,7 @@
 				E6CB61B4292B82020097D928 /* SceneDelegate.swift in Sources */,
 				E685B2A7292CA442006BC5BD /* MonthsViewController.swift in Sources */,
 				E685B2B1292DE60A006BC5BD /* ColorExtension.swift in Sources */,
+				E65D7C012938899E00D56E4D /* YearItemDummyView.swift in Sources */,
 				E6E28222293055B300217535 /* ViewControllerAnimatedTransitioning.swift in Sources */,
 				E6565EFE292F284400BD555D /* LabelTableHeaderView.swift in Sources */,
 			);

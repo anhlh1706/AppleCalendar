@@ -70,7 +70,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             let indexPathToAnimateIn = IndexPath(row: selectingIndexPath.section * 12 + selectingIndexPath.item, section: 0)
             
             /// fade out all cells
-            UIView.animate(withDuration: translationDuration, animations: {
+            UIView.animate(withDuration: translationDuration, delay: 0, options: .curveEaseIn, animations: {
                 for view in fromViewController.collectionView.subviews.filter({ $0 !== selectingCell }) {
                     let xDistance = view.frame.minX - selectingCell.frame.minX
                     let yDistance = view.frame.minY - selectingCell.frame.minY
@@ -84,7 +84,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
                 selectingCell.transform = CGAffineTransform(translationX: -translationXFactor, y: -translationYFactor).scaledBy(x: scaleOutFactor, y: scaleOutFactor)
                 
                 /// Animate section header to have the same x with the first day of month
-                if let index = DataSource.shared.monthItems[indexPathToAnimateIn.row].days.firstIndex(where: { !$0.isEmpty }) {
+                if let index = DataSource.monthItems[indexPathToAnimateIn.row].days.firstIndex(where: { !$0.isEmpty }) {
                     let leftRightPadding: CGFloat = 36
                     let translationX = (Screen.width - leftRightPadding) / 7 * CGFloat(index)// - originX
                     
@@ -111,10 +111,10 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             
             /// Month to show fade big in
             /// Dummy
-            var months = [DataSource.shared.monthItems[indexPathToAnimateIn.row]]
+            var months = [DataSource.monthItems[indexPathToAnimateIn.row]]
                           
-            if DataSource.shared.monthItems.count > (indexPathToAnimateIn.row + 1) {
-                months.append(DataSource.shared.monthItems[indexPathToAnimateIn.row + 1])
+            if DataSource.monthItems.count > (indexPathToAnimateIn.row + 1) {
+                months.append(DataSource.monthItems[indexPathToAnimateIn.row + 1])
             }
             let dummyView = MonthItemDummyView(months: months)
             fromViewController.view.addSubview(dummyView)
@@ -136,24 +136,51 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
             dummyView.layoutIfNeeded()
             dummyView.alpha = 0
             
-            UIView.animate(withDuration: translationDuration, delay: 0, animations: {
+            UIView.animate(withDuration: translationDuration, delay: 0, options: .curveEaseIn, animations: {
                 dummyView.transform = .identity
                 dummyView.alpha = 1
-            }) { _ in
+            }, completion: { _ in
                 dummyView.removeFromSuperview()
-            }
+                fromViewController.collectionView.subviews.forEach { $0.transform = .identity }
+                fromViewController.collectionView.alpha = 1
+            })
             
         }
         
         // MARK: - Transition from Months to Years (Months backward)
         if let fromViewController = fromViewController as? MonthsViewController, let toViewController = toViewController as? YearsViewController {
-//            guard let selectedCell = toViewController.collectionView.visibleCells.first(where: { !$0.transform.isIdentity }) else { return }
-            toViewController.title = ""
-            UIView.animate(withDuration: translationDuration) {
-                fromViewController.tableView.visibleCells.forEach { $0.transform = .identity }
-                toViewController.collectionView.subviews.forEach { $0.transform = .identity }
-                toViewController.collectionView.alpha = 1
+            let year = DataSource.yearSections.first(where: { $0.year == Int(toViewController.title ?? "") })!
+            if let index = DataSource.yearSections.firstIndex(of: year),
+               let attribute = toViewController.collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: index)) {
+                let yOffset = attribute.frame.minY - toViewController.collectionView.safeAreaInsets.top
+                toViewController.collectionView.setContentOffset(CGPoint(x: 0, y: yOffset), animated: false)
+                toViewController.collectionView.layoutIfNeeded()
             }
+            toViewController.title = ""
+            
+            
+            let dummyView = YearItemDummyView(years: [year])
+            dummyView.alpha = 0.001
+            fromViewController.view.addSubview(dummyView)
+            dummyView.edgeAnchors == fromViewController.view.safeAreaLayoutGuide.edgeAnchors
+            dummyView.layoutIfNeeded()
+            
+            let itemWidth = dummyView.collectionView.visibleCells.first?.bounds.width ?? (Screen.width / 3)
+            let scaleFactor = Screen.width / itemWidth
+            dummyView.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            dummyView.layoutIfNeeded()
+            
+            UIView.animate(withDuration: translationDuration, delay: 0, options: .curveEaseOut, animations: {
+                dummyView.transform = .identity
+                fromViewController.tableView.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
+                dummyView.alpha = 1
+                fromViewController.tableView.alpha = 0
+            }, completion: { _ in
+                dummyView.removeFromSuperview()
+                fromViewController.tableView.alpha = 1
+                fromViewController.tableView.transform = .identity
+            })
+
         }
         
         

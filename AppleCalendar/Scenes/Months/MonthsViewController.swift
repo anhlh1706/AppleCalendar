@@ -66,7 +66,7 @@ extension MonthsViewController {
     func updateContent() {
         var snapshot = MonthsSnapshot()
         
-        let section = YearSection(year: 0, months: DataSource.shared.monthItems)
+        let section = YearSection(year: 0, months: DataSource.monthItems)
         snapshot.appendSections([section])
         snapshot.appendItems(section.months, toSection: section)
         

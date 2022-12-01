@@ -63,7 +63,7 @@ final class MonthsCollectionView: UICollectionView {
     func updateContent() {
         var snapshot = MonthsSnapshot()
         
-        for section in DataSource.shared.monthItems where !section.days.isEmpty {
+        for section in DataSource.monthItems where !section.days.isEmpty {
             snapshot.appendSections([section])
             snapshot.appendItems(section.days.map { Day(day: $0) }, toSection: section)
         }
@@ -78,7 +78,7 @@ final class MonthsCollectionView: UICollectionView {
     /// Configure flow layout
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return self.createSection(using: DataSource.shared.monthItems[sectionIndex])
+            return self.createSection(using: DataSource.monthItems[sectionIndex])
         }
 
         let config = UICollectionViewCompositionalLayoutConfiguration()

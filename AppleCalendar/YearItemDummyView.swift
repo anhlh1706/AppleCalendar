@@ -1,46 +1,47 @@
 //
-//  YearsViewController.swift
+//  YearItemDummyView.swift
 //  AppleCalendar
 //
-//  Created by Lê Hoàng Anh on 21/11/2022.
+//  Created by Lê Hoàng Anh on 01/12/2022.
 //
 
 import UIKit
 import Anchorage
 
-fileprivate typealias CalendarDataSource = UICollectionViewDiffableDataSource<YearSection, MonthSection>
-fileprivate typealias CalendarSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
+fileprivate typealias YearDataSource = UICollectionViewDiffableDataSource<YearSection, MonthSection>
+fileprivate typealias YearSnapshot = NSDiffableDataSourceSnapshot<YearSection, MonthSection>
 
-final class YearsViewController: UIViewController {
+/// Dummy view to show scale in animation when back from month to year
+/// Showing a year with exactly same position with year screen after scaled out
+final class YearItemDummyView: UIView, UITableViewDelegate {
     
-    var collectionView: UICollectionView!
+    private(set) var collectionView: UICollectionView!
     
-    private var dataSource: CalendarDataSource!
-    
-    let monthsViewController = MonthsViewController()
+    let years: [YearSection]
     
     private let itemsPerLine: CGFloat = 3
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+    private var dataSource: YearDataSource!
+    
+    init(years: [YearSection]) {
+        self.years = years
+        super.init(frame: .zero)
+        backgroundColor = .white
         setupCollectionView()
         createDataSource()
         updateContent()
-        preloadMonths()
     }
     
-    func preloadMonths() {
-        monthsViewController.view.layoutIfNeeded()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func setupCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
-        view.addSubview(collectionView)
-        collectionView.edgeAnchors == view.safeAreaLayoutGuide.edgeAnchors
+        collectionView = UICollectionView(frame: bounds, collectionViewLayout: createCompositionalLayout())
+        addSubview(collectionView)
+        collectionView.edgeAnchors == edgeAnchors
         
         collectionView.backgroundColor = .clear
-        collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(MonthItemCollectionCell.self, forCellWithReuseIdentifier: "MonthItemCollectionCell")
@@ -50,7 +51,7 @@ final class YearsViewController: UIViewController {
     }
     
     func createDataSource() {
-        dataSource = CalendarDataSource(collectionView: collectionView) { collectionView, indexPath, item in
+        dataSource = YearDataSource(collectionView: collectionView) { collectionView, indexPath, item in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthItemCollectionCell", for: indexPath) as! MonthItemCollectionCell
             cell.section = item
             return cell
@@ -68,9 +69,9 @@ final class YearsViewController: UIViewController {
     }
     
     func updateContent() {
-        var snapshot = CalendarSnapshot()
+        var snapshot = YearSnapshot()
         
-        for section in DataSource.yearSections where !section.months.isEmpty {
+        for section in years where !section.months.isEmpty {
             snapshot.appendSections([section])
             snapshot.appendItems(section.months.map { $0 }, toSection: section)
         }
@@ -78,7 +79,7 @@ final class YearsViewController: UIViewController {
         if !snapshot.itemIdentifiers.isEmpty {
             dataSource?.apply(snapshot)
         } else {
-            dataSource.apply(CalendarSnapshot())
+            dataSource.apply(YearSnapshot())
         }
     }
     
@@ -119,12 +120,5 @@ final class YearsViewController: UIViewController {
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
         
         return layoutSection
-    }
-}
-
-extension YearsViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(monthsViewController, animated: true)
-        title = String(DataSource.yearSections[indexPath.section].year)
     }
 }

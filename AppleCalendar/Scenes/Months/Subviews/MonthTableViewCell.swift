@@ -96,7 +96,7 @@ final class MonthTableViewCell: UITableViewCell {
     /// Configure flow layout
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return self.createSection(using: DataSource.shared.monthItems[sectionIndex])
+            return self.createSection(using: DataSource.monthItems[sectionIndex])
         }
 
         let config = UICollectionViewCompositionalLayoutConfiguration()
