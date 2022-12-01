@@ -41,9 +41,9 @@ final class MonthItemDummyView: UIView, UITableViewDelegate {
         tableView.delegate = self
         
         tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         tableView.register(MonthTableViewCell.self, forCellReuseIdentifier: "MonthTableViewCell")
-        tableView.register(LabelTableHeaderView.self, forHeaderFooterViewReuseIdentifier: "LabelTableHeaderView")
     }
     
     func createDataSource() {
@@ -73,7 +73,7 @@ final class MonthItemDummyView: UIView, UITableViewDelegate {
         if months[indexPath.row].days.count % 7 != 0 {
             numberOfLines += 1
         }
-        return DataSource.bigSectionHeaderHeight + CGFloat(numberOfLines) * DataSource.dayItemHeight
+        return DataSource.smallSectionHeaderHeight + CGFloat(numberOfLines) * DataSource.dayItemHeight
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

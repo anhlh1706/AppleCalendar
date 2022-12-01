@@ -18,15 +18,9 @@ final class MonthsViewController: UIViewController {
     
     private(set) var tableView: UITableView!
     
-    private var ds: MonthsDataSource!
+    private var dataSource: MonthsDataSource!
     
-    private var observation: NSKeyValueObservation!
-    
-    var currentYear: Int = 1970 {
-        didSet {
-            navigationController?.viewControllers.first?.title = String(currentYear)
-        }
-    }
+    let currentYear = CurrentValueSubject<String?, Never>(nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,8 +40,8 @@ extension MonthsViewController {
         
         tableView.delegate = self
         tableView.showsVerticalScrollIndicator = false
+        tableView.separatorStyle = .none
         tableView.register(MonthTableViewCell.self, forCellReuseIdentifier: "MonthTableViewCell")
-        tableView.register(LabelTableHeaderView.self, forHeaderFooterViewReuseIdentifier: "LabelTableHeaderView")
         
 //        tableView.publisher(for: \.contentSize)
 //            .throttle(for: .seconds(0.1), scheduler: RunLoop.main, latest: false)
@@ -55,10 +49,14 @@ extension MonthsViewController {
 //            .sink(receiveValue: tableView.layoutIfNeeded)
 //            .store(in: &cancellables)
         
+        currentYear.sink(receiveValue: { [weak self] year in
+            self?.navigationController?.viewControllers.first?.title = year
+        }).store(in: &cancellables)
+        
     }
     
     func createDataSource() {
-        ds = MonthsDataSource(tableView: tableView) { tableView, indexPath, item in
+        dataSource = MonthsDataSource(tableView: tableView) { tableView, indexPath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: "MonthTableViewCell", for: indexPath) as! MonthTableViewCell
             cell.month = item
             return cell
@@ -73,9 +71,9 @@ extension MonthsViewController {
         snapshot.appendItems(section.months, toSection: section)
         
         if !snapshot.itemIdentifiers.isEmpty {
-            ds?.apply(snapshot)
+            dataSource?.apply(snapshot)
         } else {
-            ds?.apply(MonthsSnapshot())
+            dataSource?.apply(MonthsSnapshot())
         }
     }
     
@@ -85,9 +83,9 @@ extension MonthsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let startYear = Calendar.current.component(.year, from: DataSource.startTime)
         
-        let displayingYear = startYear + (indexPath.row / 12)
-        if displayingYear != currentYear {
-            currentYear = displayingYear
+        let displayingYear = String(startYear + (indexPath.row / 12))
+        if displayingYear != currentYear.value {
+            currentYear.send(String(displayingYear))
         }
     }
 }

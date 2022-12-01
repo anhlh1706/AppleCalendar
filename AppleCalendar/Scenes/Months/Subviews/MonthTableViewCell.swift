@@ -69,6 +69,12 @@ final class MonthTableViewCell: UITableViewCell {
             
             categoryHeader.title = category?.monthText
             categoryHeader.showBottomSeparator = false
+            categoryHeader.label.font = .systemFont(ofSize: 22, weight: .semibold)
+            if let index = category?.days.firstIndex(where: { !$0.isEmpty }), let itemsPerLine = self?.itemsPerLine {
+                let leftRightPadding: CGFloat = 36
+                categoryHeader.titleLeading = CGFloat(index) * ((Screen.width - leftRightPadding) / CGFloat(itemsPerLine))
+            }
+            
             return categoryHeader
         }
     }
@@ -101,7 +107,7 @@ final class MonthTableViewCell: UITableViewCell {
     /// Configure section header layout.
     func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
         let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93),
-                                                             heightDimension: .estimated(DataSource.bigSectionHeaderHeight))
+                                                             heightDimension: .estimated(DataSource.smallSectionHeaderHeight))
         
         let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize,
                                                                               elementKind: UICollectionView.elementKindSectionHeader,

@@ -12,7 +12,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
     
     var isPush: Bool
     
-    let translationDuration: CGFloat = 0.4
+    let translationDuration: CGFloat = 2//0.4
     
     init(isPush: Bool) {
         self.isPush = isPush
@@ -49,6 +49,7 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
                 let currentWidth = selectingCell.bounds.width
                 return Screen.width / currentWidth
             }()
+            let scaleInFactor = 1 / scaleOutFactor
             
             let originX = selectingCell.frame.minX
             let originY = selectingCell.frame.minY - fromViewController.collectionView.contentOffset.y
@@ -66,36 +67,50 @@ final class ViewControllerAnimatedTransitioning: NSObject, UIViewControllerAnima
                 return yAfterScaled
             }()
             
+            let indexPathToAnimateIn = IndexPath(row: selectingIndexPath.section * 12 + selectingIndexPath.item, section: 0)
+            
             /// fade out all cells
             UIView.animate(withDuration: translationDuration, animations: {
-                for cell in fromViewController.collectionView.subviews.filter({ $0 !== selectingCell }) {
-                    let xDistance = cell.frame.minX - selectingCell.frame.minX
-                    let yDistance = cell.frame.minY - selectingCell.frame.minY
+                for view in fromViewController.collectionView.subviews.filter({ $0 !== selectingCell }) {
+                    let xDistance = view.frame.minX - selectingCell.frame.minX
+                    let yDistance = view.frame.minY - selectingCell.frame.minY
                     
                     let xTranslation = xDistance * (scaleOutFactor + 1)
                     let yTranslation = yDistance * (scaleOutFactor + 1)
                     
-                    cell.transform = CGAffineTransform(translationX: xTranslation, y: yTranslation).scaledBy(x: scaleOutFactor, y: scaleOutFactor)
+                    view.transform = CGAffineTransform(translationX: xTranslation, y: yTranslation).scaledBy(x: scaleOutFactor, y: scaleOutFactor)
                 }
                 
                 selectingCell.transform = CGAffineTransform(translationX: -translationXFactor, y: -translationYFactor).scaledBy(x: scaleOutFactor, y: scaleOutFactor)
+                
+                /// Animate section header to have the same x with the first day of month
+                if let index = DataSource.shared.monthItems[indexPathToAnimateIn.row].days.firstIndex(where: { !$0.isEmpty }) {
+                    let leftRightPadding: CGFloat = 36
+                    let translationX = (Screen.width - leftRightPadding) / 7 * CGFloat(index)// - originX
+                    
+                    selectingCell.subviews.first?.subviews.first?.subviews.first(where: { $0 is YearHeaderCollectionView })?.transform = CGAffineTransform(translationX: translationX / 2, y: 0).scaledBy(x: scaleInFactor, y: scaleInFactor)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + self.translationDuration) {
+                        selectingCell.subviews.first?.subviews.first?.subviews.first(where: { $0 is YearHeaderCollectionView })?.transform = .identity
+                    }
+                }
             })
             
             UIView.animate(withDuration: translationDuration * 0.6, animations: {
+                selectingCell.subviews.first?.subviews.first?.subviews.first(where: { $0 is YearHeaderCollectionView })?.alpha = 0
                 fromViewController.collectionView.subviews.forEach { $0.alpha = 0 }
             }, completion: { [self] _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + translationDuration / 2) {
                     fromViewController.collectionView.subviews.forEach { $0.alpha = 1 }
+                    selectingCell.subviews.first?.subviews.first?.subviews.first(where: { $0 is YearHeaderCollectionView })?.alpha = 1
                 }
             })
             
             // Set tableView offset in selected month
-            let indexPathToAnimateIn = IndexPath(row: selectingIndexPath.section * 12 + selectingIndexPath.item, section: 0)
             toViewController.tableView.scrollToRow(at: indexPathToAnimateIn, at: .top, animated: false)
             
             /// Month to show fade big in
             /// Dummy
-            let scaleInFactor = 1 / scaleOutFactor
             
             var months = [DataSource.shared.monthItems[indexPathToAnimateIn.row]]
                           

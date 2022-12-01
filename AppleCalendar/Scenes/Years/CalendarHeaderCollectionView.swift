@@ -13,6 +13,16 @@ final class YearHeaderCollectionView: UICollectionReusableView {
     private(set) var label: UILabel!
     private var bottomSeparator: UIView!
     
+    private(set) var leadingConstraint: NSLayoutConstraint!
+    
+    let padding: CGFloat = 3
+    
+    var titleLeading: CGFloat = 0 {
+        didSet {
+            leadingConstraint?.constant = titleLeading + padding
+        }
+    }
+    
     var title: String? {
         didSet {
             label.text = title
@@ -28,7 +38,7 @@ final class YearHeaderCollectionView: UICollectionReusableView {
         label = UILabel()
         addSubview(label)
         label.verticalAnchors == verticalAnchors + 5
-        label.leadingAnchor == leadingAnchor + 3
+        leadingConstraint = label.leadingAnchor == leadingAnchor + 3
         
         bottomSeparator = UIView()
         addSubview(bottomSeparator)
